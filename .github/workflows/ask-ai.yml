@@ -1,25 +1,18 @@
-name: Ask AI
-on:
-  workflow_dispatch:
+- name: AI Inference
+  id: ai-response
+  continue-on-error: true
+  uses: actions/ai-inference@v2
+  with:
+    token: ${{ secrets.GITHUB_TOKEN }}
+    prompt: |
+      Give me a programming joke.
 
-permissions:
-  models: read
-
-jobs:
-  ask-ai:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: AI Inference
-        id: ai-response
-        uses: actions/ai-inference@v2
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          prompt: |
-            Give me a programming joke.
-
-      - name: Display AI Response
-        run: |
-          echo "## 🤖 AI Response" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "${{ steps.ai-response.outputs.response }}" >> $GITHUB_STEP_SUMMARY
+- name: Display AI Response
+  run: |
+    echo "## 🤖 AI Response" >> $GITHUB_STEP_SUMMARY
+    echo "" >> $GITHUB_STEP_SUMMARY
+    if [ -n "${{ steps.ai-response.outputs.response }}" ]; then
+      echo "${{ steps.ai-response.outputs.response }}" >> $GITHUB_STEP_SUMMARY
+    else
+      echo "_AI service unavailable (brownout/retirement). Please retry later or migrate provider._" >> $GITHUB_STEP_SUMMARY
+    fi
