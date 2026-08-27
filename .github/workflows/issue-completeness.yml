@@ -16,6 +16,7 @@ jobs:
       - name: Analyze issue with AI
         id: ai-response
         uses: actions/ai-inference@v2
+        continue-on-error: true
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           max-tokens: 1000
@@ -40,4 +41,4 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           issue-number: ${{ github.event.issue.number }}
-          body: ${{ steps.ai-response.outputs.response }}
+          body: ${{ steps.ai-response.outputs.response || 'AI service unavailable (brownout/retirement). Please retry later or migrate provider.' }}
