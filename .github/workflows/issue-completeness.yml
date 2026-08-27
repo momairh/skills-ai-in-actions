@@ -37,6 +37,7 @@ jobs:
             ---
 
       - name: Comment results on the issue
+        if: always()
         uses: peter-evans/create-or-update-comment@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
